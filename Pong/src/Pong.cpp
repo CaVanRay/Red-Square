@@ -45,13 +45,9 @@ int main() {
             if (event.type == SDL_QUIT) running = false;
         }
 
-        // getting window size to prevent the square from moving out of bounds
+        // getting window size to prevent from moving out of bounds
         int windowWidth, windowHeight;
         SDL_GetWindowSize(window, &windowWidth, &windowHeight);
-        
-
-        float horizontalVelocity = 0.0f; // Horizontal velocity reset each frame
-        verticalVelocity += GRAVITY; // Apply gravity to vertical velocity
 
     // **************************************** KEYBOARD INPUT **************************************** 
 
