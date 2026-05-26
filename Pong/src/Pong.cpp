@@ -58,7 +58,7 @@ int main() {
              
         }
         if (keyboardState[SDL_SCANCODE_DOWN]) {
-            horizontalVelocity = 5.0f;
+            
         }
         if (keyboardState[SDL_SCANCODE_ESCAPE]) {
             running = false;
