@@ -60,6 +60,11 @@ int main() {
         if (keyboardState[SDL_SCANCODE_DOWN]) {
             
         }
+        if (keyboardState[SDL_SCANCODE_SPACE) {
+    
+        // might add speed boost here
+            
+        }
         if (keyboardState[SDL_SCANCODE_ESCAPE]) {
             running = false;
         }
