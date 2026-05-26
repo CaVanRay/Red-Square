@@ -101,22 +101,16 @@ int main() {
 
         // **************************************** RENDERING **************************************** 
 
-        // Clear to black
+        // Clear to black and make background
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-        // Draw red square
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        // SDL_Rect redSquare = {100, 100, 200, 200};
-        SDL_RenderFillRect(renderer, &redSquare);
-        // Draw blue platform
-        SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
-        SDL_RenderFillRect(renderer, &bluePlatform);
-        // Draw green platform
-        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-        SDL_RenderFillRect(renderer, &greenPlatform);
-        // Draw yellow platform
-        SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-        SDL_RenderFillRect(renderer, &yellowPlatform);
+        // Change color to white and render center line, paddles, & ball
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderFillRect(renderer, &centerLine);
+        SDL_RenderFillRect(renderer, &pongBall);
+        SDL_RenderFillRect(renderer, &leftPaddle);
+        SDL_RenderFillRect(renderer, &rightPaddle);
+       
 
         SDL_RenderPresent(renderer);
 
