@@ -130,7 +130,7 @@ int main() {
             ballVertVelocity = vertDist(gen);
         }
 
-        leftPaddle.y = pongBall.y - 100;
+        // leftPaddle.y = pongBall.y - 100;
         rightPaddle.y = pongBall.y - 100;
 
 
