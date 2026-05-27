@@ -120,7 +120,8 @@ int main() {
 
         if(SDL_HasIntersection(&pongBall, &leftPaddle)){
             ballHorVelocity = 1000.4f;
-            ballVertVelocity = vertDist(gen);
+            // ballVertVelocity = vertDist(gen);
+            ballVerVelocity = -ballVertVelocity;
         }
         if(SDL_HasIntersection(&pongBall, &rightPaddle)){
             ballHorVelocity = -1000.0f;
