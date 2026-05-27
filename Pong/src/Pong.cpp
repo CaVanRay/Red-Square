@@ -1,19 +1,18 @@
 #include <SDL2/SDL.h>
 #include <iostream>
+#include <random>
+#include <ctime>
 
 int main() {
 
     // **************************************** WINDOW SETUP **************************************** 
-
-    const int WINDOW_WIDTH = 1280;
-    const int WINDOW_HEIGHT = 720;
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
         return 1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("Pong", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    SDL_Window* window = SDL_CreateWindow("Pong", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1920, 720, SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (!window) {
         std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
         SDL_Quit();
@@ -29,75 +28,111 @@ int main() {
     }
 
     // **************************************** GAME VARIABLES **************************************** 
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> vertDist(-300.0f, 300.0f);
 
     bool running = true;
     SDL_Event event;
 
-    SDL_Rect centerLine = { 1280, 0, 1, 2800};
-    SDL_Rect pongBall = { 1270, 740, 20, 20};
-    SDL_Rect leftPaddle = {20, 640, 20, 200}; 
-    SDL_Rect rightPaddle = {2520, 640, 20, 200};
 
-    float LeftVertVelocity = 0.0f;
-    float rightVertVelocity = 0.0f;
-    float ballVertVelocity = 0.0f;
-    float ballHorVelocity = 25.0f;
+    // getting window size to prevent from moving out of bounds
+    int windowWidth, windowHeight;
+    SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+
+    SDL_Rect centerLine = { windowWidth / 2, 0, 1, windowHeight};
+    SDL_Rect pongBall = { windowWidth / 2, windowHeight / 2, 20, 20};
+    SDL_Rect leftPaddle = {20, windowHeight / 2, 20, 200}; 
+    SDL_Rect rightPaddle = {windowWidth - 40, windowHeight / 2, 20, 200};
+
+    // VELOCITIES: PIXELS PER SECOND
+
+    float paddleVelocity = 500.0f;
+    float ballVertVelocity = 1000.0f;
+    float ballHorVelocity = 1000.0f;
+
+    // TIMING VARIABLES
+
+    Uint64 lastTime = SDL_GetTicks64();
+    const int TARGET_FPS = 60;
+    const float FRAME_DELAY = 1000.0f / TARGET_FPS;
 
 
     // **************************************** GAME LOOP **************************************** 
 
     while (running) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) running = false;
-        }
 
-        // getting window size to prevent from moving out of bounds
-        int windowWidth, windowHeight;
-        SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+        Uint64 frameStart = SDL_GetTicks64();
+        // 1. CALCULATE DELTA TIME (in seconds)
+        Uint64 currentTime = SDL_GetTicks64();
+        float deltaTime = (currentTime - lastTime) / 1000.0f;
+        lastTime = currentTime;
+        // Cap deltaTime to prevent huge jumps if lag occurs (e.g. debugging)
+        if (deltaTime > 0.05f) deltaTime = 0.05f;
+
+        while(SDL_PollEvent(&event)){
+            if(event.type == SDL_QUIT) running = false;
+        }
 
     // **************************************** KEYBOARD INPUT **************************************** 
 
         // Handle keyboard input
         const Uint8* keyboardState = SDL_GetKeyboardState(NULL);
+
+        float moveStep = paddleVelocity * deltaTime;
         if (keyboardState[SDL_SCANCODE_UP]) {
-             leftPaddle.y -= 10;
-             rightPaddle.y -= 10;
+             leftPaddle.y -= (int)moveStep;
+             rightPaddle.y -= (int)moveStep;
         }
         if (keyboardState[SDL_SCANCODE_DOWN]) {
-            leftPaddle.y += 10;
-            rightPaddle.y += 10;
+            leftPaddle.y += (int)moveStep;
+            rightPaddle.y += (int)moveStep;
         }
         if (keyboardState[SDL_SCANCODE_SPACE]) {
+            float boostStep = (paddleVelocity * 3.0f) * deltaTime;
             if(keyboardState[SDL_SCANCODE_UP]){
-                leftPaddle.y -= 30;
-                rightPaddle.y -= 30;
+                leftPaddle.y -= (int)boostStep;
+                rightPaddle.y -= (int)boostStep;
             }else if(keyboardState[SDL_SCANCODE_DOWN]){
-                leftPaddle.y += 30;
-                rightPaddle.y += 30;
+                leftPaddle.y += (int)boostStep;
+                rightPaddle.y += (int)boostStep;
             }            
         }
         if (keyboardState[SDL_SCANCODE_ESCAPE]) {
             running = false;
         }
 
-        // **************************************** HORIZONTAL MOVEMENT **************************************** 
+        // **************************************** MOVEMENT **************************************** 
+
+        // [Clamp Paddles]
+        leftPaddle.y = std::max(0, std::min(leftPaddle.y, windowHeight - leftPaddle.h));
+        rightPaddle.y = std::max(0, std::min(rightPaddle.y, windowHeight - rightPaddle.h));
 
         // this will effect ball only
-        pongBall.x += ballHorVelocity;
+        pongBall.x += (int)(ballHorVelocity * deltaTime);
+        pongBall.y += (int)(ballVertVelocity * deltaTime);
 
         if(SDL_HasIntersection(&pongBall, &leftPaddle)){
-            ballHorVelocity = 25;
+            ballHorVelocity = 1000.4f;
+            ballVertVelocity = vertDist(gen);
         }
         if(SDL_HasIntersection(&pongBall, &rightPaddle)){
-            ballHorVelocity = -25;
+            ballHorVelocity = -1000.0f;
+            ballVertVelocity = vertDist(gen);
+        }
+        if(pongBall.y <= 0 || pongBall.y + pongBall.h >= windowHeight){
+            ballVertVelocity = -ballVertVelocity;
         }
         if(pongBall.x < 0 || pongBall.x > windowWidth){
-            pongBall.x = 1270;
+            pongBall.x = windowWidth / 2 - 10;
+            pongBall.y = windowHeight / 2;
+            ballHorVelocity = (ballHorVelocity > 0) ? 1000.0f : -1000.0f;
+            ballVertVelocity = vertDist(gen);
         }
 
-        // **************************************** VERTICAL MOVEMENT **************************************** 
+        leftPaddle.y = pongBall.y;
+        rightPaddle.y = pongBall.y;
 
-        // this will effect ball & paddles
 
         // **************************************** RENDERING **************************************** 
 
@@ -113,6 +148,13 @@ int main() {
        
 
         SDL_RenderPresent(renderer);
+
+        // **************************************** FRAME RATE LIMITING **************************************** 
+
+        Uint64 frameTime = SDL_GetTicks64() - frameStart;
+        if(frameTime < FRAME_DELAY){
+            SDL_Delay((Uint64)(FRAME_DELAY - frameTime));
+        }
 
     }
 
