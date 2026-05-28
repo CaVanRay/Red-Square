@@ -98,9 +98,9 @@ int main() {
         if (keyboardState[SDL_SCANCODE_ESCAPE]) {
             running = false;
         }
-        if(ghostPaddle.y > rightPaddle.y){
+        if(ghostPaddle.y > rightPaddle.y + 20){
             rightPaddle.y += (int)moveStep;
-        }else if(ghostPaddle.y < rightPaddle.y){
+        }else if(ghostPaddle.y < rightPaddle.y - 20){
             rightPaddle.y -= (int)moveStep;
         }
 
