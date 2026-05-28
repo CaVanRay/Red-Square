@@ -117,11 +117,11 @@ int main() {
         if(SDL_HasIntersection(&pongBall, &leftPaddle)){
             ballHorVelocity = 1000.4f;
             if(pongBall.y < leftPaddle.y + 35){ // top portion of paddle
-                ballVertVelocity = -500.0f;
+                ballVertVelocity = ballVertVelocity -500.0f;
             }else if(pongBall.y > leftPaddle.y + 65){ // bottom porton of paddle
-                ballVertVelocity = 500.0f;
+                ballVertVelocity = ballVertVelocity + 500.0f;
             }else{ // middle portion of paddle
-                ballVertVelocity = 0.0f;
+                ballVertVelocity = ballVertVelocity / 2;
             }
         }
         if(SDL_HasIntersection(&pongBall, &rightPaddle)){
