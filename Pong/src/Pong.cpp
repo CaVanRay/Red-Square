@@ -19,7 +19,8 @@ int main() {
     TTF_Font* scoreFont = TTF_OpenFont("arial.ttf", 40);
 
     if(!scoreFont){
-        std::cerr << "Failed to load font: %s\n", TTF_GetError();
+        std::cerr << "Failed to load font: %s\n" << TTF_GetError() << std::endl;
+        return 1;
     }    
 
     SDL_Color textColor = { 255, 255, 255, 255};
@@ -92,11 +93,13 @@ int main() {
             if(event.type == SDL_QUIT) running = false;
         }
 
+        // SCORE TEXT RENDERING
+
         std::string leftPScoreText = std::to_string(leftPlayerScore);
         std::string rightPScoreText = std::to_string(rightPlayerScore);
 
-        SDL_Surface* leftPSurface = TTF_RenderText_Solid(scoreFont, leftPlayerScore.c_str());
-        SDL_Surface* rightPSurface = TTF_RenderText_Solid(scoreFont, rightPlayerScore.c_str());
+        SDL_Surface* leftPSurface = TTF_RenderText_Solid(scoreFont, leftPScoreText.c_str(), textColor);
+        SDL_Surface* rightPSurface = TTF_RenderText_Solid(scoreFont, rightPScoreText.c_str(), textColor);
 
         SDL_Texture* leftPTexture = SDL_CreateTextureFromSurface(renderer, leftPSurface);
         SDL_Texture* rightPTexture = SDL_CreateTextureFromSurface(renderer, rightPSurface);
@@ -104,8 +107,14 @@ int main() {
         SDL_Rect leftPRect = { 200, 20, leftPSurface->w, leftPSurface->h};
         SDL_Rect rightPRect = { 600, 20, rightPSurface->w, rightPSurface->h};
 
-        
+        SDL_RenderCopy(renderer, leftPTexture, NULL, &leftPRect);
+        SDL_RenderCopy(renderer, rightPTexture, NULL, &rightPRect);
 
+        SDL_DestroyTexture(leftPTexture);
+        SDL_DestroyTexture(rightPTexture);
+        SDL_FreeSurface(leftPSurface);
+        SDL_FreeSurface(rightPSurface);
+        
     // **************************************** KEYBOARD INPUT **************************************** 
 
         // Handle keyboard input
