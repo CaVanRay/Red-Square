@@ -18,6 +18,11 @@ int main() {
 
     TTF_Font* scoreFont = TTF_OpenFont("arial.ttf", 40);
 
+    //if (TTF_Init() < 0) {
+    //    std::cerr << "SDL_ttf initialization failed: " << TTF_GetError() << std::endl;
+    //    return 1;
+    //}
+
     if(!scoreFont){
         std::cerr << "Failed to load font: %s\n" << TTF_GetError() << std::endl;
         return 1;
@@ -93,7 +98,7 @@ int main() {
             if(event.type == SDL_QUIT) running = false;
         }
 
-        // SCORE TEXT RENDERING
+        // SCORE TEXT
 
         std::string leftPScoreText = std::to_string(leftPlayerScore);
         std::string rightPScoreText = std::to_string(rightPlayerScore);
@@ -104,16 +109,8 @@ int main() {
         SDL_Texture* leftPTexture = SDL_CreateTextureFromSurface(renderer, leftPSurface);
         SDL_Texture* rightPTexture = SDL_CreateTextureFromSurface(renderer, rightPSurface);
 
-        SDL_Rect leftPRect = { 200, 20, leftPSurface->w, leftPSurface->h};
-        SDL_Rect rightPRect = { 600, 20, rightPSurface->w, rightPSurface->h};
-
-        SDL_RenderCopy(renderer, leftPTexture, NULL, &leftPRect);
-        SDL_RenderCopy(renderer, rightPTexture, NULL, &rightPRect);
-
-        SDL_DestroyTexture(leftPTexture);
-        SDL_DestroyTexture(rightPTexture);
-        SDL_FreeSurface(leftPSurface);
-        SDL_FreeSurface(rightPSurface);
+        SDL_Rect leftPRect = { windowWidth / 4, 20, leftPSurface->w, leftPSurface->h};
+        SDL_Rect rightPRect = { (windowWidth / 4) * 3, 20, rightPSurface->w, rightPSurface->h};
         
     // **************************************** KEYBOARD INPUT **************************************** 
 
@@ -200,8 +197,13 @@ int main() {
         SDL_RenderFillRect(renderer, &pongBall);
         SDL_RenderFillRect(renderer, &leftPaddle);
         SDL_RenderFillRect(renderer, &rightPaddle);
+        SDL_RenderCopy(renderer, leftPTexture, NULL, &leftPRect);
+        SDL_RenderCopy(renderer, rightPTexture, NULL, &rightPRect);
        
-
+        SDL_DestroyTexture(leftPTexture);
+        SDL_DestroyTexture(rightPTexture);
+        SDL_FreeSurface(leftPSurface);
+        SDL_FreeSurface(rightPSurface);
         SDL_RenderPresent(renderer);
 
         // **************************************** FRAME RATE LIMITING **************************************** 
