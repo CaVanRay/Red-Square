@@ -129,7 +129,7 @@ int main() {
             if(pongBall.y < rightPaddle.y + 35){
                 ballVertVelocity = -500.0f
             }else if(pongBall.y > rightPaddle.y + 65){
-                
+                ballVertVelocity = 500.0f
             }else{
                 ballVertVelocity = 0.0f;
 
