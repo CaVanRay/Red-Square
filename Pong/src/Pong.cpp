@@ -118,7 +118,7 @@ int main() {
             ballHorVelocity = 1000.4f;
             if(pongBall.y < leftPaddle.y + 35){ // top portion of paddle
                 
-            }else if(pongBall.y > leftPaddl.y + 65){ // bottom porton of paddle
+            }else if(pongBall.y > leftPaddle.y + 65){ // bottom porton of paddle
                 
             }else{ // middle portion of paddle
                 
