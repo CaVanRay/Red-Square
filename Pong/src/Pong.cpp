@@ -83,20 +83,16 @@ int main() {
         float moveStep = paddleVelocity * deltaTime;
         if (keyboardState[SDL_SCANCODE_UP]) {
              leftPaddle.y -= (int)moveStep;
-             //rightPaddle.y -= (int)moveStep;
         }
         if (keyboardState[SDL_SCANCODE_DOWN]) {
             leftPaddle.y += (int)moveStep;
-            //rightPaddle.y += (int)moveStep;
         }
         if (keyboardState[SDL_SCANCODE_SPACE]) {
             float boostStep = (paddleVelocity * 3.0f) * deltaTime;
             if(keyboardState[SDL_SCANCODE_UP]){
                 leftPaddle.y -= (int)boostStep;
-                //rightPaddle.y -= (int)boostStep;
             }else if(keyboardState[SDL_SCANCODE_DOWN]){
                 leftPaddle.y += (int)boostStep;
-                //rightPaddle.y += (int)boostStep;
             }            
         }
         if (keyboardState[SDL_SCANCODE_ESCAPE]) {
