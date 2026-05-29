@@ -1,9 +1,11 @@
 # Compiler
 CXX = g++
 
-# Use sdl2-config to get the correct compiler and linker flags
-CFLAGS = $(shell sdl2-config --cflags)
-LDFLAGS = $(shell sdl2-config --libs)
+# Use pkg-config for SDL2, SDL2_mixer, and SDL2_ttf
+# This handles both CFLAGS (-I...) and LDFLAGS (-l...) correctly
+PKG_CONFIG := pkg-config
+CFLAGS := $(shell $(PKG_CONFIG) --cflags sdl2 SDL2_mixer SDL2_ttf)
+LDFLAGS := $(shell $(PKG_CONFIG) --libs sdl2 SDL2_mixer SDL2_ttf)
 
 # Source file
 SRC = src/Pong.cpp
@@ -12,7 +14,7 @@ SRC = src/Pong.cpp
 TARGET = Pong
 
 # Default target
-all:	$(TARGET)
+all: $(TARGET)
 
 # Build rule
 $(TARGET): $(SRC)
