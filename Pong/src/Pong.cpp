@@ -90,6 +90,7 @@ int main() {
 
     float previousLeftPaddleY = leftPaddle.y;
     float previousrightPaddleY = rightPaddle.y;
+    const float EPSILON = 0.1f; // Minimum movement to count as moving
 
     // TIMING VARIABLES
 
@@ -171,6 +172,10 @@ int main() {
         // this will effect ball only
         pongBall.x += (int)(ballHorVelocity * deltaTime);
         pongBall.y += (int)(ballVertVelocity * deltaTime);
+
+        // this is where paddle velocity is calculated before it interacts with the pongBall
+        float leftPaddleVelocity = leftPaddle.y - previousLeftPaddleY;
+        float rightPaddleVelocity = rightPaddle.y - previousrightPaddleY;
 
         if(SDL_HasIntersection(&pongBall, &leftPaddle)){
             ballHorVelocity = 1000.4f;
